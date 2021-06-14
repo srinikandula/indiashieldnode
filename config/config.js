@@ -4,7 +4,7 @@ function getUserHome() {
     return process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
 }
 
-var localConfigPath = getUserHome() + '/sktcargo-config.json';
+var localConfigPath = getUserHome() + '/indiashieldnode-config.json';
 // var projectConfigPath = __dirname + '/sktcargo-config.json';
 var projectConfigPath = __dirname + '/config.json';
 
