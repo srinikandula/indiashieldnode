@@ -79,6 +79,11 @@ exports.getresources = (async (req,res,next) => {
 res.status(200).json({ success : true ,count: config.length, data: config });
 });
 
+exports.getresourcesbylogin = (async (req,res,next) => {
+    const config = await Resources.find(req.query);
+res.status(200).json({ success : true ,count: config.length, data: config });
+});
+
 exports.sendOTP = (async (req,res,next) => {
     console.log(JSON.stringify(req.body));
     res.status(200).json({ success : true , data: "OTP SENT SUCCESSFULLY !" });
@@ -127,18 +132,45 @@ exports.updateuser = (async (req,res,next) => {
     } 
 });
 
+exports.verifyresource = (async (req,res,next) => {
+    try{
+        let resourcedata = await Resources.findByIdAndUpdate(req.body.id,{"verifiedby" : req.body.verifyby, "verificationStatus" : "Verified", "verifiedon" : req.body.date}, {
+            runValidators: true,
+        });
+        let resource = await Resources.find({_id: req.body.id});
+        res.status(201).json({
+            success:true,
+            data: resource
+        }); 
+    }catch(err){
+        // console.log(err);
 
-exports.verifyOTP = async (req,res,next) => {
-    console.log(req.body);
+        if (err.name === 'ValidationError'){
+            const message = Object.values(err.errors).map(val => val.message);
+            error = new ErrorResponse(message, 400);
+            next(err);
+        }
+
+        if(err.code === 11000){
+            console.log(err.message);
+            const message = 'Type Pair Is Already Exits!';
+            error = new ErrorResponse(message, 400);
+            next(err);
+        }
+    } 
+})
+
+exports.verifyOTP = (async (req,res,next) => {
+    let number = req.body.phonenumber;
     if(req.body.otp === '1234'){
-        User.find({ phonenumber: req.body.phonenumber})
+        User.find({ phonenumber: number})
                 .exec()
-                .then(user => {
+                .then((async (user) => {
                     if(user.length < 1){
-                        const username = User.create({"phonenumber":number, "signup" : false});
+                        const username = await User.create({"phonenumber": number, "signup" : false});
                         const token = jwt.sign({
-                            phonenumber: username[0].phonenumber,
-                            userId: username[0]._id
+                            phonenumber: username.phonenumber,
+                            userId: username._id
                             },
                             config.jwt.secret, 
                             {
@@ -149,9 +181,9 @@ exports.verifyOTP = async (req,res,next) => {
                             success: true,
                             message: 'Auth Successful !',
                             token: token,
-                            userId: username[0]._id,
-                            signup: username[0].signup,
-                            number: username[0].phonenumber
+                            userId: username._id,
+                            signup: username.signup,
+                            number: username.phonenumber,
                         })
                     }else{
                         const token = jwt.sign({
@@ -163,18 +195,20 @@ exports.verifyOTP = async (req,res,next) => {
                            expiresIn: config.jwt.options.expiresIn
                             }
                         );
+                        let data = user;
                         return res.status(200).json({
                             success: true,
                             message: 'Auth Successful !',
                             token: token,
                             userId: user[0]._id,
                             signup: user[0].signup,
-                            number: user[0].phonenumber
+                            number: user[0].phonenumber,
+                            data: data
                         })
                     }
-                })
+                }))
     }else{
         res.status(401).json({ success : false , data: "OTP Unverified !" });
     }
-}
+});
 

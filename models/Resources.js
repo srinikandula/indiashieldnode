@@ -28,6 +28,14 @@ const Resources = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date
+    },
+    verifiedon: {
+        type: Date,
+        default: Date
+    },
+    verifiedby:{
+        type:String,
+        required: [true, ''], 
     }
 });
 

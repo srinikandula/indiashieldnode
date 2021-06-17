@@ -38,6 +38,7 @@ app.use((req, res, next) => {
 // const bookshipment = require('./routes/bookshipment');
 // const contactus = require('./routes/contactus');
 const resources = require('./routes/resources');
+const resourcesbylogin = require('./routes/resourcesbylogin');
 const sendotp = require('./routes/sendOtp');
 const verifyOTP = require('./routes/verifyOtp');
 const user = require('./routes/users');
@@ -52,6 +53,7 @@ const user = require('./routes/users');
 
 // URLS
 app.use('/api/v1/resources', resources);
+app.use('/api/v1/resourcesbylogin', resourcesbylogin);
 app.use('/api/v1/sendotp', sendotp);
 app.use('/api/v1/verifyotp', verifyOTP);
 app.use('/api/v1/user', user);

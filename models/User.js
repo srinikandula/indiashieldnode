@@ -9,7 +9,7 @@ const userSchema = mongoose.Schema({
     signup: {
         type: Boolean,
         default: false
-    }
+    },
 }, { strict: false });
 
 module.exports = mongoose.model('User', userSchema);
