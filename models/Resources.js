@@ -48,14 +48,14 @@ const Resources = new mongoose.Schema({
         type:String,
         default: 'Unverified'
     },
-    // createdOn: {
-    //     type: Date,
-    //     default: Date
-    // },
-    // updatedOn: {
-    //     type: Date,
-    //     default: Date
-    // },
+    createdOn: {
+        type: Date,
+        default: Date
+    },
+    updatedOn: {
+        type: Date,
+        default: Date
+    },
     verifiedOn: {
         type: Date,
     },
@@ -71,9 +71,7 @@ const Resources = new mongoose.Schema({
         type:String,
         // required: [true, ''], 
     },
-}, { strict: false,
-    timestamps: { createdAt: 'createdOn', updatedAt: 'updatedOn' },
-});
+}, { strict: false });
 
 
 
