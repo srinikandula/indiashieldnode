@@ -5,8 +5,8 @@ function getUserHome() {
 }
 
 var localConfigPath = getUserHome() + '/indiashieldnode-config.json';
-// var projectConfigPath = __dirname + '/sktcargo-config.json';
-var projectConfigPath = __dirname + '/config.json';
+// var projectConfigPath = __dirname + '/sktcargo-configTemplate.json';
+var projectConfigPath = __dirname + '/configTemplate.json';
 
 if(process.env.NODE_ENV === "test") {
     projectConfigPath = __dirname + '/test_config.json';
