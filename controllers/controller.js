@@ -98,6 +98,34 @@ exports.verifyresource = (async (req,res,next) => {
     } 
 })
 
+exports.editresource = (async (req,res,next) => {
+    try{
+        let resourcedata = await Resources.findByIdAndUpdate(req.body._id,req.body, {
+            runValidators: true,
+        });
+        let resource = await Resources.find({_id: req.body.id});
+        res.status(201).json({
+            success:true,
+            data: resource
+        }); 
+    }catch(err){
+        // console.log(err);
+
+        if (err.name === 'ValidationError'){
+            const message = Object.values(err.errors).map(val => val.message);
+            error = new ErrorResponse(message, 400);
+            next(err);
+        }
+
+        if(err.code === 11000){
+            console.log(err.message);
+            const message = 'Type Pair Is Already Exits!';
+            error = new ErrorResponse(message, 400);
+            next(err);
+        }
+    } 
+})
+
 exports.verifyOTP = (async (req,res,next) => {
     let number = req.body.phonenumber;
     if(req.body.otp === '1234'){
